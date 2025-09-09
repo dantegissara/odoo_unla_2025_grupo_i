@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+  <record id="module_category_real_estate" model="ir.module.category">
+  <field name="name">Inmobiliaria</field>
+  <field name="description">Grupos para gestionar propiedades</field>
+  <field name="sequence">15</field>
+  </record>
+
+  <record id="group_estate_manager" model="res.groups">
+    <field name="name">Manager de Propiedades</field>
+    <field name="category_id" ref="real_estate.module_category_real_estate"/>
+  </record>
+
+  <record id="group_estate_salesman" model="res.groups">
+    <field name="name">Vendedor de Propiedades</field>
+    <field name="category_id" ref="real_estate.module_category_real_estate"/>
+  </record>
+
+
+</odoo>
+

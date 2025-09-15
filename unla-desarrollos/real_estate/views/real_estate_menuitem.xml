@@ -1,10 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-   <data>
-        <menuitem id="estate_root" name="Inmobiliaria">
-            <menuitem id="menu_advertisements" name="Anuncios">
-                <menuitem id="menu_estate_property" action="estate_property_action"/>
-            </menuitem>
-        </menuitem>
-   </data>
+  <data>
+    <!-- Menú raíz -->
+    <menuitem id="estate_root" name="Inmobiliaria"/>
+
+    <!-- Primer nivel: Anuncios -->
+    <menuitem id="menu_advertisements" name="Anuncios" parent="estate_root"/>
+
+    <!-- Acción Propiedades dentro de Anuncios -->
+    <menuitem id="menu_estate_property"
+              name="Propiedades"
+              parent="menu_advertisements"
+              action="estate_property_action"/>
+
+    <!-- Primer nivel: Ajustes -->
+    <menuitem id="menu_real_estate_settings"
+              name="Ajustes"
+              parent="estate_root"
+              sequence="50"/>
+
+    <!-- Acción Tipos de Propiedad dentro de Ajustes -->
+    <menuitem id="menu_estate_property_type"
+              name="Tipos de propiedad"
+              parent="menu_real_estate_settings"
+              action="action_estate_property_type"
+              sequence="10"/>
+  </data>
 </odoo>

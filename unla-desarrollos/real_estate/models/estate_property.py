@@ -61,3 +61,9 @@ class EstateProperty(models.Model):
         default=lambda self: self.env.user,  # usuario logueado
         copy=False  # no copiar al duplicar registro
     )
+
+    # 🔹 Many2many - Etiquetas
+    tag_ids = fields.Many2many(
+        comodel_name="estate.property.tag",
+        string="Etiquetas",
+    )

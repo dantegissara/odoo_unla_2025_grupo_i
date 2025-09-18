@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+  <data>
+    <!-- Vista de lista editable -->
+    <record id="view_estate_property_tag_list" model="ir.ui.view">
+      <field name="name">estate.property.tag.list</field>
+      <field name="model">estate.property.tag</field>
+      <field name="arch" type="xml">
+        <list string="Etiquetas de propiedad" editable="top">
+          <field name="name"/>
+        </list>
+      </field>
+    </record>
+
+    <!-- Acción: solo 'list' -->
+    <record id="action_estate_property_tag" model="ir.actions.act_window">
+      <field name="name">Etiquetas de propiedad</field>
+      <field name="res_model">estate.property.tag</field>
+      <field name="view_mode">list</field>
+    </record>
+  </data>
+</odoo>

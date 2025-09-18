@@ -25,5 +25,13 @@
               parent="menu_real_estate_settings"
               action="action_estate_property_type"
               sequence="10"/>
+    
+    <!-- Etiquetas de propiedad -->
+    <menuitem id="menu_estate_property_tag"
+          name="Etiquetas de propiedad"
+          parent="menu_real_estate_settings"
+          action="action_estate_property_tag"
+          sequence="20"/>
+
   </data>
 </odoo>

@@ -76,6 +76,15 @@
                                     </group>
                                 </group>
                             </page>
+                            <page string="Ofertas">
+                                <field name="offer_ids">
+                                    <list editable="top">
+                                        <field name="price"/>
+                                        <field name="partner_id"/>
+                                        <field name="status"/>
+                                    </list>
+                                </field>
+                            </page>
                         </notebook>
                     </sheet>
                 </form>

@@ -34,6 +34,8 @@
                         </group>
                         <group>
                             <group>
+                                <!-- AGREGADO: Campo property_type_id por encima del código postal -->
+                                <field name="property_type_id"/>
                                 <field name="postcode"/>
                                 <field name="date_availability"/>
                             </group>
@@ -59,6 +61,19 @@
                                     </group>
                                 </group>
                             </page>
+                            <!-- AGREGADO: Nueva notebook "Más info" con campos de Comprador y Vendedor -->
+                            <page string="Más info.">
+                                <group>
+                                    <group string="Comprador">
+                                        <field name="buyer_id" string="Comprador"/>
+                                        <!-- Puedes agregar más campos del comprador si los tienes en el modelo -->
+                                    </group>
+                                    <group string="Vendedor">
+                                        <field name="salesman_id" string="Vendedor"/>
+                                        <!-- Puedes agregar más campos del vendedor si los tienes en el modelo -->
+                                    </group>
+                                </group>
+                            </page>
                         </notebook>
                     </sheet>
                 </form>
@@ -68,41 +83,37 @@
         <record id="estate_property_action" model="ir.actions.act_window">
             <field name="name">Propiedades</field>
             <field name="res_model">estate.property</field>
-            <field name="view_mode">list,form</field> 
+            <field name="view_mode">list,form</field>
         </record>
-        
+
         <record id="view_estate_property_search" model="ir.ui.view">
             <field name="name">view.estate.property.search</field>
             <field name="model">estate.property</field>
             <field name="arch" type="xml">
-        <search string="Buscar propiedades">
-            <field name="name"/>
-            <field name="postcode"/>
-            <field name="expected_price"/>
-            <field name="bedrooms"/>
-            <field name="living_area"/>
-            <field name="facades"/>
-            
-            <separator/>
+                <search string="Buscar propiedades">
+                    <field name="name"/>
+                    <field name="postcode"/>
+                    <field name="expected_price"/>
+                    <field name="bedrooms"/>
+                    <field name="living_area"/>
+                    <field name="facades"/>
 
-            <!-- a. Filtro propiedades disponibles -->
-            <filter name="available_properties" 
-                    string="Disponibles" 
-                    domain="[('state', 'in', ('nuevo','oferta_recibida'))]"/>
+                    <separator/>
 
-            <separator/>
+                    <!-- a. Filtro propiedades disponibles -->
+                    <filter name="available_properties" string="Disponibles" domain="[('state', 'in', ('nuevo','oferta_recibida'))]"/>
 
-            <!-- b. Agrupar por estado -->
-            <group expand="0" string="Agrupar por">
-                <filter name="group_by_state" string="Estado" context="{'group_by': 'state'}"/>
-                <filter name="group_by_user" string="Usuario" context="{'group_by': 'create_uid'}"/>
-                <filter name="group_by_month" string="Mes de creación" context="{'group_by': 'create_date:month'}"/>
-            </group>
-        </search>
-    </field>
-</record>
+                    <separator/>
 
+                    <!-- b. Agrupar por estado -->
+                    <group expand="0" string="Agrupar por">
+                        <filter name="group_by_state" string="Estado" context="{'group_by': 'state'}"/>
+                        <filter name="group_by_user" string="Usuario" context="{'group_by': 'create_uid'}"/>
+                        <filter name="group_by_month" string="Mes de creación" context="{'group_by': 'create_date:month'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
 
-      
-  </data>
+    </data>
 </odoo>

@@ -1,41 +1,130 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-  <data>
+    <data>
 
+        <record id="view_estate_property_tree" model="ir.ui.view">
+            <field name="name">view.estate.property.tree</field>
+            <field name="model">estate.property</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="name"/>
+                    <field name="postcode"/>
+                    <field name="bedrooms"/>
+                    <field name="living_area"/>
+                    <field name="expected_price"/>
+                    <field name="selling_price"/>
+                    <field name="date_availability"/>
+                    <field name="tag_ids" widget="many2many_tags"/>
+                </list>
+            </field>
+        </record>
 
-    <record id="estate_property_action" model="ir.actions.act_window">
-      <field name="name">Propiedades</field>
-      <field name="res_model">estate.property</field>
-      <field name="view_mode">list,form</field>
-    </record>
+        <record id="view_estate_property_form" model="ir.ui.view">
+            <field name="name">view.estate.property.form</field>
+            <field name="model">estate.property</field>
+            <field name="arch" type="xml">
+                <form string="Formulario de propiedades">
+                    <header>
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <h1>
+                                <field name="name" placeholder="Nombre propiedad"/>
+                            </h1>
+                            <field name="tag_ids" widget="many2many_tags"/>
+                        </group>
+                        <group>
+                            <group>
+                                <!-- AGREGADO: Campo property_type_id por encima del código postal -->
+                                <field name="property_type_id"/>
+                                <field name="postcode"/>
+                                <field name="date_availability"/>
+                            </group>
+                            <group>
+                                <field name="expected_price"/>
+                                <field name="selling_price"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Descripción">
+                                <group>
+                                    <group>
+                                        <field name="description"/>
+                                        <field name="bedrooms"/>
+                                        <field name="living_area"/>
+                                        <field name="facades"/>
+                                        <field name="garage"/>
+                                    </group>
+                                    <group>
+                                        <field name="garden"/>
+                                        <field name="garden_area"/>
+                                        <field name="garden_orientation"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <!-- AGREGADO: Nueva notebook "Más info" con campos de Comprador y Vendedor -->
+                            <page string="Más info.">
+                                <group>
+                                    <group string="Comprador">
+                                        <field name="buyer_id" string="Comprador"/>
+                                        <!-- Puedes agregar más campos del comprador si los tienes en el modelo -->
+                                    </group>
+                                    <group string="Vendedor">
+                                        <field name="salesman_id" string="Vendedor"/>
+                                        <!-- Puedes agregar más campos del vendedor si los tienes en el modelo -->
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Ofertas">
+                                <field name="offer_ids">
+                                    <list editable="top">
+                                        <field name="price"/>
+                                        <field name="partner_id"/>
+                                        <field name="status"/>
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
 
-    <record id="view_estate_property_search" model="ir.ui.view">
-      <field name="name">estate.property.search</field>
-      <field name="model">estate.property</field>
-      <field name="arch" type="xml">
-        <search string="Buscar Propiedades">
-          <field name="name"/>
-          <field name="postcode"/>
-          <field name="expected_price"/>
-          <field name="bedrooms"/>
-          <field name="living_area"/>
-          <field name="facades"/>
+        <record id="estate_property_action" model="ir.actions.act_window">
+            <field name="name">Propiedades</field>
+            <field name="res_model">estate.property</field>
+            <field name="view_mode">list,form</field>
+        </record>
 
-          <separator/>
+        <record id="view_estate_property_search" model="ir.ui.view">
+            <field name="name">view.estate.property.search</field>
+            <field name="model">estate.property</field>
+            <field name="arch" type="xml">
+                <search string="Buscar propiedades">
+                    <field name="name"/>
+                    <field name="postcode"/>
+                    <field name="expected_price"/>
+                    <field name="bedrooms"/>
+                    <field name="living_area"/>
+                    <field name="facades"/>
 
+                    <separator/>
 
-          <filter name="my_properties" string="Mis propiedades" domain="[('create_uid', '=', uid)]"/>
+                    <!-- a. Filtro propiedades disponibles -->
+                    <filter name="available_properties" string="Disponibles" domain="[('state', 'in', ('nuevo','oferta_recibida'))]"/>
 
-          <separator/>
+                    <separator/>
 
-          <group expand="0" string="Agrupar por">
-            <filter name="group_by_user" string="Usuario" context="{'group_by': 'create_uid'}"/>
-            <filter name="group_by_month" string="Mes de creación" context="{'group_by': 'create_date:month'}"/>
-            <filter name="group_by_postcode" string="Código Postal" context="{'group_by': 'postcode'}"/>
-          </group>
-        </search>
-      </field>
-    </record>
+                    <!-- b. Agrupar por estado -->
+                    <group expand="0" string="Agrupar por">
+                        <filter name="group_by_state" string="Estado" context="{'group_by': 'state'}"/>
+                        <filter name="group_by_user" string="Usuario" context="{'group_by': 'create_uid'}"/>
+                        <filter name="group_by_month" string="Mes de creación" context="{'group_by': 'create_date:month'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
 
-  </data>
+    </data>
 </odoo>

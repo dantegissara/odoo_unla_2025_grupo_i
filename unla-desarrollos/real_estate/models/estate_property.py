@@ -1,5 +1,6 @@
 from odoo import fields, models, api
 from dateutil.relativedelta import relativedelta
+from datetime import date, timedelta
 
 class EstateProperty(models.Model):
     _name = 'estate.property'
@@ -8,9 +9,9 @@ class EstateProperty(models.Model):
     name = fields.Char(string="Título", required=True)
     description = fields.Text(string="Descripción")
     postcode = fields.Char(string="Código Postal")
-    date_availability = fields.Date(string="Fecha disponibilidad")
+    date_availability = fields.Date(string="Fecha disponibilidad",copy=False, default=lambda self: date.today() + timedelta(days=90))
     expected_price = fields.Float(string="Precio esperado")
-    selling_price = fields.Float(string="Precio de venta")
+    selling_price = fields.Float(string="Precio de venta",copy=False)
     bedrooms = fields.Integer(string="Habitaciones", default=2)
     living_area = fields.Integer(string="Superficie cubierta")
     facades = fields.Integer(string="Fachadas")
@@ -27,3 +28,49 @@ class EstateProperty(models.Model):
         string="Orientación del jardín",
     )
     garden_area = fields.Integer(string="Superficie jardín")
+    state = fields.Selection(
+        [
+            ("nuevo", "Nuevo"),
+            ("oferta_recibida", "Oferta Recibida"),
+            ("oferta_aceptada", "Oferta Aceptada"),
+            ("vendido", "Vendido"),
+            ("cancelado", "Cancelado"),
+        ],
+        string="Estado",
+        required=True,
+        default="nuevo",
+        copy=False
+    )
+
+        # 🔹 Many2one - Tipo Propiedad
+    property_type_id = fields.Many2one(
+        "estate.property.type",
+        string="Tipo Propiedad"
+    )
+
+    # 🔹 Many2one - Comprador (res.partner)
+    buyer_id = fields.Many2one(
+        "res.partner",
+        string="Comprador"
+    )
+
+    # 🔹 Many2one - Vendedor (res.users)
+    salesman_id = fields.Many2one(
+        "res.users",
+        string="Vendedor",
+        default=lambda self: self.env.user,  # usuario logueado
+        copy=False  # no copiar al duplicar registro
+    )
+
+    # 🔹 Many2many - Etiquetas
+    tag_ids = fields.Many2many(
+        comodel_name="estate.property.tag",
+        string="Etiquetas",
+    )
+
+    offer_ids = fields.One2many(
+    comodel_name="estate.property.offer",
+    inverse_name="property_id",
+    string="Ofertas",
+    )
+

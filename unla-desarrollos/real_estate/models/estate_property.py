@@ -74,3 +74,23 @@ class EstateProperty(models.Model):
     string="Ofertas",
     )
 
+    total_area = fields.Float(
+        string="Superficie total",
+        compute="_compute_total_area",
+        store=True
+    )
+
+    @api.depends("living_area", "garden_area")
+    def _compute_total_area(self):
+        for rec in self:
+            rec.total_area = rec.living_area + rec.garden_area
+
+    best_offer = fields.Float(
+        string="Mejor oferta",
+        compute="_compute_best_offer"
+    )
+
+    def _compute_best_offer(self):
+        for rec in self:
+            offers = rec.offer_ids.mapped("price")
+            rec.best_offer = max(offers) if offers else 0

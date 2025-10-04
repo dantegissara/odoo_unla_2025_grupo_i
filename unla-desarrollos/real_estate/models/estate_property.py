@@ -61,7 +61,7 @@ class EstateProperty(models.Model):
             ("oferta_recibida", "Oferta Recibida"),
             ("oferta_aceptada", "Oferta Aceptada"),
             ("vendido", "Vendido"),
-            ("cancelado", "Cancelado"),
+            ("cancelado", "Cancelado"),        
         ],
         string="Estado",
         required=True,
@@ -122,16 +122,17 @@ class EstateProperty(models.Model):
             offers = rec.offer_ids.mapped("price")
             rec.best_offer = max(offers) if offers else 0
 
-    def action_cancel(self):
-        for rec in self:
-            if rec.state == 'vendido':
-                raise UserError("No podés cancelar una propiedad vendida.")
-            rec.state = 'cancelado'
-        return True
-
-    def action_mark_sold(self):
+    def action_set_sold(self):
         for rec in self:
             if rec.state == 'cancelado':
-                raise UserError("No podés marcar como vendida una propiedad cancelada.")
+                raise UserError("No se puede marcar como vendida una propiedad cancelada.")
             rec.state = 'vendido'
-        return True
+
+    def action_set_canceled(self):
+        for rec in self:
+            if rec.state == 'vendido':
+                raise UserError("No se pueden cancelar propiedades ya vendidas.")
+            rec.state = 'cancelado' 
+
+        
+    

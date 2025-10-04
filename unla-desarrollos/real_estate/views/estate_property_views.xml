@@ -25,6 +25,16 @@
             <field name="arch" type="xml">
                 <form string="Formulario de propiedades">
                     <header>
+                        <button name="action_set_sold" 
+                        string="Vendido" type="object" 
+                        class="btn-primary" 
+                        attrs="{'invisible': [('state', '!=', 'oferta_aceptada')]}"/>
+
+                        <button name="action_set_canceled" 
+                        string="Cancelar" type="object" 
+                        class="btn-secondary" 
+                        attrs="{'invisible': [('state', 'in', 'cancelado')]}"/>
+
                         <field name="state" widget="statusbar"/>
                     </header>
                     <sheet>

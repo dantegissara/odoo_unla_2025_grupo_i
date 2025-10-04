@@ -11,6 +11,7 @@
         <xpath expr="//field[@name='offer_ids']/*[self::list or self::tree]" position="inside">
           <field name="validity"/>
           <field name="date_deadline"/>
+          <field name="property_type"/>
         </xpath>
       </field>
     </record>

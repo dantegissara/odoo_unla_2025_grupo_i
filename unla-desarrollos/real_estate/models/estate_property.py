@@ -1,6 +1,7 @@
 from odoo import fields, models, api
 from dateutil.relativedelta import relativedelta
 from datetime import date, timedelta
+from odoo.exceptions import UserError  # <- agregado mínimo para UserError
 
 class EstateProperty(models.Model):
     _name = 'estate.property'
@@ -11,6 +12,21 @@ class EstateProperty(models.Model):
     postcode = fields.Char(string="Código Postal")
     date_availability = fields.Date(string="Fecha disponibilidad",copy=False, default=lambda self: date.today() + timedelta(days=90))
     expected_price = fields.Float(string="Precio esperado")
+
+    # muestra una advertencia si el precio esperado es menor a 10.000
+    # 
+    @api.onchange('expected_price')
+    def _onchange_expected_price_warning(self):
+        for rec in self:
+            if rec.expected_price and rec.expected_price < 10000: # evita advertencia si el campo está vacío y
+                return {
+                    'warning': {
+                        'title': "Precio bajo",
+                        'message': "El precio esperado es menor a 10.000. Verifica si es correcto."
+                    }
+                }
+        # Si no hay advertencia, no es necesario devolver nada
+
     selling_price = fields.Float(string="Precio de venta",copy=False)
     bedrooms = fields.Integer(string="Habitaciones", default=2)
     living_area = fields.Integer(string="Superficie cubierta")
@@ -28,6 +44,17 @@ class EstateProperty(models.Model):
         string="Orientación del jardín",
     )
     garden_area = fields.Integer(string="Superficie jardín")
+
+    # hace que al clickear en el checkbox de jardín, se complete automáticamente el área del jardín
+    # si se desmarca, el área vuelve a 0
+    @api.onchange('garden')
+    def _onchange_garden(self):
+        for rec in self:
+            if rec.garden:
+                rec.garden_area = 10
+            else:
+                rec.garden_area = 0
+
     state = fields.Selection(
         [
             ("nuevo", "Nuevo"),
@@ -94,3 +121,17 @@ class EstateProperty(models.Model):
         for rec in self:
             offers = rec.offer_ids.mapped("price")
             rec.best_offer = max(offers) if offers else 0
+
+    def action_cancel(self):
+        for rec in self:
+            if rec.state == 'vendido':
+                raise UserError("No podés cancelar una propiedad vendida.")
+            rec.state = 'cancelado'
+        return True
+
+    def action_mark_sold(self):
+        for rec in self:
+            if rec.state == 'cancelado':
+                raise UserError("No podés marcar como vendida una propiedad cancelada.")
+            rec.state = 'vendido'
+        return True

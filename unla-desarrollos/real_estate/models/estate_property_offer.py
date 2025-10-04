@@ -39,6 +39,15 @@ class EstatePropertyOffer(models.Model):
         store=True,
     )
 
+    # Campo relacionado al tipo de propiedad
+    # "related" apunta al campo property_type_id del modelo estate.property
+    # "store=True" hace que se guarde en la base de datos (sirve para filtrar/ordenar en vistas y reportes)
+    property_type = fields.Many2one(          # El modelo relacionado
+        string="Tipo Propiedad",
+        related="property_id.property_type_id",
+        store=True,
+    )
+
     @api.depends('validity', 'create_date')
     def _compute_date_deadline(self):
         for rec in self:

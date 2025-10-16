@@ -6,6 +6,13 @@ class EstatePropertyOffer(models.Model):
     _name = "estate.property.offer"
     _description = "Oferta sobre propiedad"
 
+    # SQL Constraints - Punto 18
+    _sql_constraints = [
+        ('unique_offer_per_partner_per_property', 
+         'UNIQUE(partner_id, property_id)', 
+         'Una persona no puede hacer más de una oferta por propiedad')
+    ]
+    
     price = fields.Float(string="Precio", required=True)
     status = fields.Selection(
         selection=[

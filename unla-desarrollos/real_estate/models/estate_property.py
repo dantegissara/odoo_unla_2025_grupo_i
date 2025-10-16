@@ -101,6 +101,16 @@ class EstateProperty(models.Model):
     string="Ofertas",
     )
 
+     # Punto 19: Campo computado para obtener todos los partners que hicieron ofertas
+    offer_partner_ids = fields.Many2many(
+        "res.partner",
+        string="Ofertantes",
+        compute="_compute_offer_partner_ids",
+        store=True  # Opcional: si quieres que se guarde en la BD para búsquedas
+    )
+
+
+
     total_area = fields.Float(
         string="Superficie total",
         compute="_compute_total_area",
@@ -121,6 +131,15 @@ class EstateProperty(models.Model):
         for rec in self:
             offers = rec.offer_ids.mapped("price")
             rec.best_offer = max(offers) if offers else 0
+
+
+    # Punto 19: Método para computar los partners que hicieron ofertas
+    @api.depends('offer_ids.partner_id')
+    def _compute_offer_partner_ids(self):
+        for record in self:
+            # Obtenemos todos los partners de las ofertas y eliminamos duplicados
+            partners = record.offer_ids.mapped('partner_id')
+            record.offer_partner_ids = partners
 
     def action_set_sold(self):
         for rec in self:

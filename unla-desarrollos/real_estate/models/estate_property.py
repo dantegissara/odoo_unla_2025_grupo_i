@@ -1,3 +1,4 @@
+import random
 from odoo import fields, models, api
 from dateutil.relativedelta import relativedelta
 from datetime import date, timedelta
@@ -153,5 +154,42 @@ class EstateProperty(models.Model):
                 raise UserError("No se pueden cancelar propiedades ya vendidas.")
             rec.state = 'cancelado' 
 
-        
+    def _get_random_partner(self, excluded_partners):
+        """Devuelve un partner activo aleatorio que NO esté en la lista excluida."""
+        domain = [('active', '=', True)]
+        if excluded_partners:
+            domain.append(('id', 'not in', excluded_partners.ids))
+        partners = self.env['res.partner'].search(domain, limit=0)
+        if not partners:
+            return None
+        return random.choice(partners)
+
+    def action_generate_auto_offer(self):
+        for prop in self:
+            # 1) Precio = expected_price con variación aleatoria [-30%, +30%]
+            if not prop.expected_price:
+                raise UserError("La propiedad no tiene 'Precio esperado' para calcular la oferta.")
+            variation = random.uniform(-0.3, 0.3)
+            auto_price = prop.expected_price * (1 + variation)
+
+            # redondeo “amigable” (opcional)
+            auto_price = round(auto_price, 2)
+
+            # 2) Obtener ofertantes ya usados
+            # Preferimos offer_partner_ids (punto 19); si no existiera, lo derivamos de offer_ids
+            excluded = getattr(prop, 'offer_partner_ids', self.env['res.partner'])
+            if not excluded:
+                excluded = prop.offer_ids.mapped('partner_id')
+
+            # 3) Elegir partner aleatorio válido
+            partner = self._get_random_partner(excluded)
+            if not partner:
+                raise UserError("No hay contactos activos disponibles que no hayan ofertado todavía.")
+
+            # 4) Crear la oferta
+            self.env['estate.property.offer'].create({
+                'price': auto_price,
+                'partner_id': partner.id,
+                'property_id': prop.id,
+            })
     

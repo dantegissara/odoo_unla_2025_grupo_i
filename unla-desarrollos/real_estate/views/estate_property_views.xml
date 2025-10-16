@@ -25,15 +25,26 @@
             <field name="arch" type="xml">
                 <form string="Formulario de propiedades">
                     <header>
-                        <button name="action_set_sold" 
-                        string="Vendido" type="object" 
-                        class="btn-primary" 
-                        attrs="{'invisible': [('state', '!=', 'oferta_aceptada')]}"/>
+                        
+                        <button name="action_set_sold"
+                                string="Vendido"
+                                type="object"
+                                class="btn-primary"
+                                invisible="['!=', state, 'oferta_aceptada']"/>
 
-                        <button name="action_set_canceled" 
-                        string="Cancelar" type="object" 
-                        class="btn-secondary" 
-                        attrs="{'invisible': [('state', 'in', 'cancelado')]}"/>
+                    
+                        <button name="action_set_canceled"
+                                string="Cancelar"
+                                type="object"
+                                class="btn-secondary"
+                                invisible="['in', state, ['cancelado', 'vendido']]"/>
+
+                        
+                        <button name="action_generate_auto_offer"
+                                type="object"
+                                string="Generar oferta automática"
+                                class="btn-primary"
+                                />
 
                         <field name="state" widget="statusbar"/>
                     </header>
@@ -77,16 +88,13 @@
                                     </group>                               
                                 </group>
                             </page>
-                            <!-- AGREGADO: Nueva notebook "Más info" con campos de Comprador y Vendedor -->
                             <page string="Más info.">
                                 <group>
                                     <group string="Comprador">
                                         <field name="buyer_id" string="Comprador"/>
-                                        <!-- Puedes agregar más campos del comprador si los tienes en el modelo -->
                                     </group>
                                     <group string="Vendedor">
                                         <field name="salesman_id" string="Vendedor"/>
-                                        <!-- Puedes agregar más campos del vendedor si los tienes en el modelo -->
                                     </group>
                                 </group>
                             </page>

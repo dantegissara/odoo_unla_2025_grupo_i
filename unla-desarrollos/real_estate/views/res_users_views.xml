@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- ================================================== -->
+        <!-- Punto 25: Herencia de vista para agregar pestaña "Propiedades" -->
+        <!-- ================================================== -->
+        <record id="view_users_form_estate_inherit" model="ir.ui.view">
+            <field name="name">res.users.form.estate.inherit</field>
+            <field name="model">res.users</field>
+            <field name="inherit_id" ref="base.view_users_form"/>
+            <field name="arch" type="xml">
+                <!-- Buscar la notebook por posición en lugar de xpath -->
+                <data>
+                    <xpath expr="//notebook" position="inside">
+                        <page string="Propiedades">
+                            <field name="property_ids" readonly="1"/>
+                        </page>
+                    </xpath>
+                </data>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -38,6 +38,42 @@ class EstatePropertyOffer(models.Model):
         store=True,
     )
 
+
+    # ==================================================
+    #  Punto 23: Sobrescribir el método create
+    # ==================================================
+    @api.model
+    def create(self, vals):
+        # Validación a: Precio mayor a la mejor oferta existente
+        property_id = vals.get('property_id')
+        price = vals.get('price')
+        
+        if property_id and price:
+            property_obj = self.env['estate.property'].browse(property_id)
+            
+            # Obtener la mejor oferta actual
+            existing_offers = property_obj.offer_ids.mapped('price')
+            best_offer = max(existing_offers) if existing_offers else 0
+            
+            if price <= best_offer:
+                raise UserError(f"El precio ofertado (${price}) debe ser mayor a la mejor oferta actual (${best_offer})")
+            
+            # Validación b: Estado de la propiedad debe ser "Nuevo" u "Oferta recibida"
+            valid_states = ['nuevo', 'oferta_recibida']
+            if property_obj.state not in valid_states:
+                raise UserError(f"Solo se pueden crear ofertas para propiedades en estado 'Nuevo' u 'Oferta recibida'. Estado actual: {property_obj.state}")
+        
+        # Crear la oferta
+        offer = super().create(vals)
+        
+        # c: Cambiar estado de la propiedad a "Oferta recibida"
+        if property_id:
+            property_obj.write({'state': 'oferta_recibida'})
+        
+        return offer
+    # ==================================================
+
+
     @api.depends('validity', 'create_date')
     def _compute_date_deadline(self):
         for rec in self:

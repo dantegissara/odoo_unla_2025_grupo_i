@@ -154,6 +154,54 @@ class EstateProperty(models.Model):
                 raise UserError("No se pueden cancelar propiedades ya vendidas.")
             rec.state = 'cancelado' 
 
+
+    # ==================================================
+    # Punto 22: restricción para eliminar propiedades
+    # ==================================================
+    @api.ondelete(at_uninstall=False)
+    def _unlink_if_new_or_cancelled(self):
+        """Solo permite eliminar propiedades en estado 'Nuevo' o 'Cancelado'"""
+        for record in self:
+            if record.state not in ['nuevo', 'cancelado']:
+                raise UserError("No se pueden eliminar propiedades que no estén en estado 'Nuevo' o 'Cancelado'")
+    # ==================================================
+
+
+
+    # =================================================
+    # Punto 21: botones en el encabezado de la propiedad
+
+    def action_remove_all_tags(self):
+        """Botón 'Sacar etiquetas': desvincula todas las etiquetas de la propiedad"""
+        for record in self:
+            record.tag_ids = [(5, 0, 0)]  # Comando Odoo para eliminar todas las etiquetas
+        return True
+
+    def action_add_all_tags(self):
+        """Botón 'Cargar todas las etiquetas': vincula todas las etiquetas existentes"""
+        all_tags = self.env['estate.property.tag'].search([])
+        for record in self:
+            record.tag_ids = [(6, 0, all_tags.ids)]  # Comando Odoo para reemplazar con todas las etiquetas
+        return True
+
+    def action_add_new_tag(self):
+        """Botón 'A estrenar': crea y vincula la etiqueta 'A estrenar'"""
+        tag_name = "A estrenar"
+        
+        # Buscar si ya existe la etiqueta
+        tag = self.env['estate.property.tag'].search([('name', '=', tag_name)], limit=1)
+        
+        # Si no existe, crearla
+        if not tag:
+            tag = self.env['estate.property.tag'].create({'name': tag_name})
+        
+        # Agregar la etiqueta a la propiedad (sin quitar las existentes)
+        for record in self:
+            record.tag_ids = [(4, tag.id, 0)]  # Comando Odoo para agregar una etiqueta
+        return True
+
+    # =================================================
+
     def _get_random_partner(self, excluded_partners):
         """Devuelve un partner activo aleatorio que NO esté en la lista excluida."""
         domain = [('active', '=', True)]

@@ -69,5 +69,20 @@
             parent="sale.menu_sale_config"
             action="action_sale_channel"
             sequence="10"/>
+
+        <!-- Herencia de la orden de venta para agregar el canal -->
+        <record id="view_order_form_inherit_sale_channel" model="ir.ui.view">
+            <field name="name">sale.order.form.inherit.sale.channel</field>
+            <field name="model">sale.order</field>
+            <!-- vista original de Odoo -->
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <!-- lo ponemos debajo del cliente -->
+                <xpath expr="//field[@name='partner_id']" position="after">
+                    <field name="sale_channel_id" required="1"/>
+                </xpath>
+            </field>
+        </record>
+        
     </data>
 </odoo>

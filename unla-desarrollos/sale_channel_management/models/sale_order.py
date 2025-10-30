@@ -21,7 +21,7 @@ class SaleOrder(models.Model):
             if channel and channel.warehouse_id:
                 order.warehouse_id = channel.warehouse_id
 
-    # --- Opcional pero MUY útil: cubrir casos no-UI (importes, RPC, automatizaciones) ---
+   
     def _apply_channel_warehouse(self, vals):
         """Helper: decide warehouse a partir del canal (solo si no viene seteado a mano)."""
         channel_id = vals.get("sale_channel_id")
@@ -38,7 +38,19 @@ class SaleOrder(models.Model):
         return super().create(vals)
 
     def write(self, vals):
-        # Si cambian el canal en una SO existente y no fijan warehouse explícitamente,
-        # alineamos el warehouse con el del canal.
+
         self._apply_channel_warehouse(vals)
         return super().write(vals)
+    
+    def _prepare_invoice(self):
+        
+        vals = super()._prepare_invoice()
+        self.ensure_one()
+        channel = self.sale_channel_id
+        if channel:
+            # 2.c: setear diario desde el canal (si hay)
+            if channel.journal_id:
+                vals["journal_id"] = channel.journal_id.id
+            # 2.d (lo usamos en el próximo paso)
+                vals["sale_channel_id"] = channel.id
+        return vals

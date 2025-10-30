@@ -17,7 +17,9 @@
     'data': [
         'security/ir.model.access.csv',
         'views/sale_channel_views.xml',
-        #'views/credit_group_views.xml',
+        'views/account_move_show_journal.xml',
+        'views/account_move_views.xml',
+        'views/stock_picking_views.xml',
     ],
     'demo': [],
     'installable': True,

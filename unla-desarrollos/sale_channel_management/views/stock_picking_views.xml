@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Vista tree para stock.picking -->
+        <record id="view_picking_tree_inherit_sale_channel" model="ir.ui.view">
+            <field name="name">stock.picking.tree.inherit.sale.channel</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.vpicktree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='origin']" position="after">
+                    <field name="sale_channel_id"/>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Vista form para stock.picking -->
+        <record id="view_picking_form_inherit_sale_channel" model="ir.ui.view">
+            <field name="name">stock.picking.form.inherit.sale.channel</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='origin']" position="after">
+                    <field name="sale_channel_id" readonly="1"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_picking_search_inherit_sale_channel" model="ir.ui.view">
+            <field name="name">stock.picking.search.inherit.sale.channel</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_internal_search"/>
+            <field name="arch" type="xml">
+                <!-- 🔹 CORRECCIÓN ODOO 18: Usar XPath para agregar campo -->
+                <xpath expr="//search" position="inside">
+                    <field name="sale_channel_id"/>
+                </xpath>
+
+                <!-- 🔹 CORRECCIÓN ODOO 18: Agregar filtro directamente -->
+                <xpath expr="//search" position="inside">
+                    <filter string="Canal de Venta" name="sale_channel" context="{'group_by': 'sale_channel_id'}"/>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>
+
+

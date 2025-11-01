@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+  <data>
+    <!-- heredar la vista del form de estate.property -->
+    <record id="estate_property_form_inherit_offers_cols" model="ir.ui.view">
+      <field name="name">estate.property.form.inherit.offers.cols</field>
+      <field name="model">estate.property</field>
+      <field name="inherit_id" ref="real_estate.view_estate_property_form"/>
+      <field name="arch" type="xml">
+        <!-- ubicá el O2M de ofertas -->
+        <xpath expr="//field[@name='offer_ids']/*[self::list or self::tree]" position="inside">
+          <field name="validity"/>
+          <field name="date_deadline"/>
+          <field name="property_type"/>
+        </xpath>
+      </field>
+    </record>
+  </data>
+</odoo>

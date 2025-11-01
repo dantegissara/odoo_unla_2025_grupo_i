@@ -13,7 +13,13 @@
     	"views/estate_property_type_views.xml",
     	"views/estate_property_tag_views.xml",
     	"views/estate_property_offer_views.xml",
-        "views/real_estate_menuitem.xml"
+        "views/real_estate_menuitem.xml",
+        'views/estate_property_offer_inherit_views.xml',
+        # ==================================================
+        # Punto 25: Herencia de vista para agregar pestaña "Propiedades"
+        # ==================================================
+        'views/res_users_views.xml'
+        # ==================================================
     ],
     "installable": True,
     "application": True

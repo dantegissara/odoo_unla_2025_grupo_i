@@ -25,6 +25,48 @@
             <field name="arch" type="xml">
                 <form string="Formulario de propiedades">
                     <header>
+                        
+                        <button name="action_set_sold"
+                                string="Vendido"
+                                type="object"
+                                class="btn-primary"
+                                invisible="['!=', state, 'oferta_aceptada']"/>
+
+                    
+                        <button name="action_set_canceled"
+                                string="Cancelar"
+                                type="object"
+                                class="btn-secondary"
+                                invisible="['in', state, ['cancelado', 'vendido']]"/>
+
+                        
+                        <button name="action_generate_auto_offer"
+                                type="object"
+                                string="Generar oferta automática"
+                                class="btn-primary"
+                                />
+
+                        
+                        <!-- ================================================== -->
+                        <!-- punto 21: botones en el encabezado de la propiedad -->
+                        <!-- ================================================== -->
+                        <button name="action_remove_all_tags"
+                                string="Sacar etiquetas"
+                                type="object"
+                                class="btn-warning"/>
+                                
+                        <button name="action_add_all_tags"
+                                string="Cargar todas las etiquetas"
+                                type="object"
+                                class="btn-primary"/>
+                                
+                        <button name="action_add_new_tag"
+                                string="A estrenar"
+                                type="object"
+                                class="btn-success"/>
+                        <!-- ================================================== -->
+
+
                         <field name="state" widget="statusbar"/>
                     </header>
                     <sheet>
@@ -44,6 +86,7 @@
                             <group>
                                 <field name="expected_price"/>
                                 <field name="selling_price"/>
+                                <field name="best_offer"/>
                             </group>
                         </group>
                         <notebook>
@@ -60,24 +103,24 @@
                                         <field name="garden"/>
                                         <field name="garden_area"/>
                                         <field name="garden_orientation"/>
-                                    </group>
+                                    </group>     
+                                    <group>
+                                        <field name="total_area"/>
+                                    </group>                               
                                 </group>
                             </page>
-                            <!-- AGREGADO: Nueva notebook "Más info" con campos de Comprador y Vendedor -->
                             <page string="Más info.">
                                 <group>
                                     <group string="Comprador">
                                         <field name="buyer_id" string="Comprador"/>
-                                        <!-- Puedes agregar más campos del comprador si los tienes en el modelo -->
                                     </group>
                                     <group string="Vendedor">
                                         <field name="salesman_id" string="Vendedor"/>
-                                        <!-- Puedes agregar más campos del vendedor si los tienes en el modelo -->
                                     </group>
                                 </group>
                             </page>
                             <page string="Ofertas">
-                                <field name="offer_ids">
+                                <field name="offer_ids" >
                                     <list editable="top">
                                         <field name="price"/>
                                         <field name="partner_id"/>

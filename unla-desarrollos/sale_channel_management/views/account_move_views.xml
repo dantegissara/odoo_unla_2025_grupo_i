@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Vista FORM para account.move -->
+        <record id="view_move_form_with_channel" model="ir.ui.view">
+            <field name="name">account.move.form.channel</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_move_form"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//sheet//group[1]" position="inside">
+                    <field name="sale_channel_id" readonly="1"/>
+                </xpath>
+
+            </field>
+        </record>
+
+        <!-- Vista TREE -->
+        <record id="view_move_tree_with_channel" model="ir.ui.view">
+            <field name="name">account.move.tree.channel</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_move_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='journal_id']" position="after">
+                    <field name="sale_channel_id"/>
+                </xpath>
+            </field>
+        </record>
+    
+        <!-- Vista SEARCH para account.move -->
+        <record id="view_move_search_with_channel" model="ir.ui.view">
+            <field name="name">account.move.search.channel</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_account_move_filter"/>
+            <field name="arch" type="xml">
+                <!-- 🔹 CORRECCIÓN: Usar XPath en lugar de position="after" -->
+                <xpath expr="//search" position="inside">
+                    <field name="sale_channel_id"/>
+                </xpath>
+
+                <!-- 🔹 CORRECCIÓN: Agregar el filtro directamente sin grupo -->
+                <xpath expr="//search" position="inside">
+                    <filter string="Canal de Venta" name="sale_channel" context="{'group_by': 'sale_channel_id'}"/>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>
